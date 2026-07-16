@@ -22,14 +22,14 @@ curl -H "X-aws-ec2-metadata-token: $TOKEN" \
   http://169.254.169.254/latest/meta-data/iam/security-credentials/[role-name]
 ```
 
-Ideally, therefore, we would use the same approach as devcontainers, and not put "bare" credentials on our laptops 
+Ideally, therefore, we would use the same approach as devcontainers, and not put "bare" credentials on our laptops
 (where they can potentially be exfiltrated by attackers) at all.
 
 This is a simple setup to achieve that.
 
 # Setup
 
-Build a small docker image which includes some tooling, and crucially the ssm session manager plugin for aws.
+Build a small docker image which includes some scripts, the AWS cli tool and, crucially, the SSM session manager plugin for AWS.
 
 ```
 docker build -t aws-shell .
@@ -43,11 +43,12 @@ docker run -it aws-shell bash
 
 # Configuring
 
-Grab your aws credentials as aws configure commands.  Make sure the profile name is `default` or set `AWS_PROFILE`.  Paste them into the docker shell.
+Grab your AWS credentials as `aws configure` commands.  Make sure the profile name is `default` or set `AWS_PROFILE`.
+Paste them into the docker shell.  The region is already set to eu-west-1, but can be overridden on the command line.
 
 # Examples
 
-## Starting a remote ssm session
+## Starting a remote SSM session
 
 ```
 docker run -it aws-shell bash
@@ -65,10 +66,10 @@ Starting session with SessionId: justin.rowles-rycskjdsfjkgflkbgdflksdfakl
 
 ### Ports
 
-There will be three ports in play.  
+There will be three ports in play.
 
  * Container port exposed by docker
- * SSM port inside the container, exposed by aws ssm
+ * SSM port inside the container, exposed by AWS SSM
  * Remote port on the remote host, mediated by a tunnel to the remote instance
 
 The following command starts the container, listening on 9000, which is forwarded to 9000 internally.  A `socat`
@@ -81,7 +82,7 @@ docker run -it -e CONTAINER_PORT=9000 -e SSM_PORT=9001 -e REMOTE_PORT=9000 -p 90
 ```
 host-tunnel myApp myStack myStage theirHostName
 ```
-to open a tunnel on the oldest instance with those tags from SSM_PORT to &lt;theirHostName&gt;:REMOTE_PORT 
+to open a tunnel on the oldest instance with those tags from SSM_PORT to &lt;theirHostName&gt;:REMOTE_PORT
 
 A similar approach can be used to get to remote RDS hosts, looking them up with tags, using `rds-tunnel.
 
@@ -90,4 +91,4 @@ client can be anything - psql, curl, ftp...
 
 # Notes
 
-The socat listener is required solely because the aws cli does not bind to all interfaces.  This may change.
+The socat listener is required solely because the AWS cli does not bind to all interfaces.  This may change.
