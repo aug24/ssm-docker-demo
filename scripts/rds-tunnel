@@ -18,7 +18,8 @@ if [[ -z $rdsstack || $1 ]]; then
    usage
 fi
 
-function getHost() {aws rds describe-db-instances \
+function getHost() {
+  aws rds describe-db-instances \
     --query "DBInstances[?
         contains(TagList[?Key=='App'].Value, '$rdsstage') && 
         contains(TagList[?Key=='Stack'].Value, '$rdsstack') && 
@@ -27,7 +28,7 @@ function getHost() {aws rds describe-db-instances \
     --output text
 }
 
-host=getHost()
+host=getHost
 if [[ -z $host ]]; then
     echo "No host found"
     exit 1
