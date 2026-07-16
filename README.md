@@ -1,6 +1,6 @@
 # Purpose
 
-AWS SSM has been sufficient to achive virtually all ssh type needs for some time.  However, the credentials used to get a
+AWS SSM has been sufficient to achieve virtually all ssh type needs for some time.  However, the credentials used to get a
 session on a remote instance inherently provide a lot of power.  Once you have a session on an instance, you can
 use the instance's profile to read quite a lot of secret information.
 
