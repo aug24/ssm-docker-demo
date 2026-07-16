@@ -22,7 +22,8 @@ curl -H "X-aws-ec2-metadata-token: $TOKEN" \
   http://169.254.169.254/latest/meta-data/iam/security-credentials/[role-name]
 ```
 
-Ideally, therefore, we would use the same approach as devcontainers, and not put "bare" credentials on our laptops at all.
+Ideally, therefore, we would use the same approach as devcontainers, and not put "bare" credentials on our laptops 
+(where they can potentially be exfiltrated by attackers) at all.
 
 This is a simple setup to achieve that.
 
