@@ -8,7 +8,8 @@ eg
 ```
 # Fetch the user data script
 TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/user-data
+curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/user-data
 ```
 or even
 ```
@@ -17,7 +18,8 @@ aws --region eu-west-1 s3 cp s3://my-bucket-of-secrets/my-stack/PROD/my-secure-a
 ```
 or EVEN
 ```
-curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/iam/security-credentials/[role-name]
+curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/iam/security-credentials/[role-name]
 ```
 
 Ideally, therefore, we would use the same approach as devcontainers, and not put "bare" credentials on our laptops at all.
