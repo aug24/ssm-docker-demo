@@ -1,10 +1,29 @@
 # Purpose
 
-AWS SSM has been sufficient to achieve virtually all ssh type needs for some time.  However, the credentials used to get a
-session on a remote instance inherently provide a lot of power.  Once you have a session on an instance, you can
-use the instance's profile to read quite a lot of secret information.
+AWS SSM has been sufficient to achieve virtually all ssh type needs for some time.  However, it has two
+issues we should address.
 
-eg
+## AWS CLI is more powerful
+
+When it was first written, in 2018, by the then security team, fifty percent of whom are now back on the security team,
+SSM Scala closed a gap in the AWS CLI.  It required instances to be permitted access via the ssh port (22) and managed 
+discovery, then it created an ssh key, and put it on the instance, allowing the user to ssh in.  It also allowed for
+port forwarding, and other useful ssh features.
+
+The AWS CLI has since been updated to include almost the same functionality, but better.  Instances no longer need to
+be permitted access via the ssh port, and the AWS CLI can now do port forwarding by host name.
+
+SSM Scala is no longer worth the maintenance cost.  It won't be deleted, but you should consider moving away from it.
+
+![ssm-scala-tombstone.png](ssm-scala-tombstone.png)
+
+## More paranoia around credentials
+
+The AWS credentials used to get a session on a remote instance inherently provide a lot of power.  Once you have a
+session on an instance, you can use the instance's profile to access quite a lot of information, and any secrets
+the instance can read.
+
+For example: 
 ```
 # Fetch the user data script
 TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
@@ -22,10 +41,14 @@ curl -H "X-aws-ec2-metadata-token: $TOKEN" \
   http://169.254.169.254/latest/meta-data/iam/security-credentials/[role-name]
 ```
 
-Ideally, therefore, we would use the same approach as devcontainers, and not put "bare" credentials on our laptops
-(where they can potentially be exfiltrated by attackers) at all.
+Incidentally, there is now a dedicated `.ssh` permission in Janus, which gives just enough permissions to discover
+and access an instance within the account, without providing the excessive power of `.dev`
 
-This is a simple setup to achieve that.
+Even with those reduced credentials, we should aim use the same approach as devcontainers, and not put "bare" 
+credentials on our laptops (where they can potentially be exfiltrated by attackers) at all.
+
+This is a simple setup to deliver containerised ssh to instances, with discover built in.  You can use this, or take
+the principles and build your own, but the important thing is to avoid putting credentials on your laptop.
 
 # Setup
 
