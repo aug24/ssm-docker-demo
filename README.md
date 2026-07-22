@@ -58,11 +58,13 @@ Build a small docker image which includes some scripts, the AWS cli tool and, cr
 docker build -t aws-shell .
 ```
 
-# Running
+# Run
 
 ```
 docker run -it aws-shell bash
 ```
+
+These can be done in one clean step using the `scripts/container` script.
 
 # Configuring
 
